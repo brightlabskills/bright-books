@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRIGHT: Тёплая Книжная Лаборатория</title>
+    <!-- Подключаем Tailwind CSS для современной верстки -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Шрифты Google: Montserrat для интерфейса, Caveat для душевных рукописных записок -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #08101D; /* Наш фирменный глубокий синий */
+            color: #F8F9FA;
+            background-image: radial-gradient(circle at 50% 50%, #11223A 0%, #08101D 100%);
+            min-height: 100vh;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Тонкая золотая рамка в фирменном стиле по краям экрана */
+        .gold-border-decor {
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            pointer-events: none;
+        }
+
+        /* Свечение для акцентов и кнопок */
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+        }
+
+        .gold-text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Градиентные кнопки "ХОЧУ НА КУРС" и фильтров в стиле BRIGHT */
+        .bright-button {
+            background: linear-gradient(135deg, #E5A93B 0%, #B8860B 100%);
+            border: 1px solid #FFF3CD;
+            color: #08101D;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .bright-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 169, 59, 0.5);
+        }
+
+        /* Стилизация скроллбара */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08101D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E5A93B;
+            border-radius: 4px;
+        }
+
+        /* Эффект переворачивания карточки (Flip Card) */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="relative p-4 md:p-8 overflow-x-hidden">
+
+    <!-- ФИРМЕННАЯ ГЕОМЕТРИЧЕСКАЯ РАМКА С ПЕРЕКРЕСТИЯМИ (стиль референса 1782033468) -->
+    <div class="fixed inset-4 gold-border-decor z-40 rounded-lg hidden lg:block">
+        <!-- Углы и декоративные перекрестия -->
+        <div class="absolute -top-2 -left-2 text-[#E5A93B] text-xl font-light">✕</div>
+        <div class="absolute -top-2 -right-2 text-[#E5A93B] text-xl font-light">✕</div>
+        <div class="absolute -bottom-2 -left-2 text-[#E5A93B] text-xl font-light">✕</div>
+        <div class="absolute -bottom-2 -right-2 text-[#E5A93B] text-xl font-light">✕</div>
+        
+        <!-- Тонкие ромбики по бокам -->
+        <div class="absolute top-1/2 -left-[6px] w-3 h-3 bg-[#08101D] border border-[#E5A93B] rotate-45 transform -translate-y-1/2"></div>
+        <div class="absolute top-1/2 -right-[6px] w-3 h-3 bg-[#08101D] border border-[#E5A93B] rotate-45 transform -translate-y-1/2"></div>
+        <div class="absolute left-1/2 -top-[6px] w-3 h-3 bg-[#08101D] border border-[#E5A93B] rotate-45 transform -translate-x-1/2"></div>
+    </div>
+
+    <!-- ШАПКА ПРИЛОЖЕНИЯ С ЛОГОТИПОМ -->
+    <header class="max-w-6xl mx-auto mb-8 flex flex-col items-center text-center relative z-10">
+        <!-- Наш воссозданный золотой логотип-лампа из референса -->
+        <div class="mb-4 transform hover:scale-105 transition-transform duration-300">
+            <svg class="w-24 h-24 mx-auto drop-shadow-[0_0_15px_rgba(229,169,59,0.4)]" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Контур лампочки -->
+                <path d="M50 15C32.88 15 19 28.88 19 46C19 56.5 24.2 65.8 32.2 71.4C36.8 74.6 39.5 79.8 39.5 85.4V89H60.5V85.4C60.5 79.8 63.2 74.6 67.8 71.4C75.8 65.8 81 56.5 81 46C81 28.88 67.12 15 50 15Z" stroke="#E5A93B" stroke-width="3" stroke-linecap="round"/>
+                <!-- Цоколь лампы -->
+                <rect x="42" y="93" width="16" height="4" rx="2" fill="#E5A93B" />
+                <rect x="44" y="99" width="12" height="4" rx="2" fill="#E5A93B" />
+                <path d="M47 105C47 107 53 107 53 105" stroke="#E5A93B" stroke-width="2"/>
+                <!-- Элементы микросхемы / Дерево разума внутри лампы -->
+                <path d="M50 80V40" stroke="#E5A93B" stroke-width="2" />
+                <path d="M50 60C43 55 40 45 35 48" stroke="#E5A93B" stroke-width="1.5" />
+                <path d="M50 50C57 45 60 38 65 42" stroke="#E5A93B" stroke-width="1.5" />
+                <circle cx="35" cy="48" r="3" fill="#E5A93B" />
+                <circle cx="65" cy="42" r="3" fill="#E5A93B" />
+                <circle cx="50" cy="35" r="3" fill="#E5A93B" />
+                <circle cx="43" cy="53" r="2" fill="#E5A93B" />
+                <circle cx="57" cy="51" r="2" fill="#E5A93B" />
+            </svg>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl font-black tracking-tight text-[#F8F9FA]">
+            BRIGHT: <span class="text-[#E5A93B] gold-text-glow">КНИЖНАЯ ПОЛКА</span>
+        </h1>
+        <p class="text-sm md:text-base text-gray-400 mt-2 max-w-xl">
+            Твой персональный навигатор по миру лучших книг. Мы собрали этот список с теплом и заботой, чтобы помочь тебе расти каждый день.
+        </p>
+    </header>
+
+    <!-- ВВОДНОЕ "ПИСЬМО ОТ ДРУГА" (Создает атмосферу заботы) -->
+    <section class="max-w-4xl mx-auto mb-10 bg-[#13223A] border border-dashed border-[#E5A93B]/40 p-6 rounded-2xl relative overflow-hidden z-10">
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#E5A93B]/5 rounded-full blur-2xl"></div>
+        <div class="flex flex-col md:flex-row items-center gap-6">
+            <div class="text-4xl">☕</div>
+            <div>
+                <h3 class="text-lg font-bold text-[#E5A93B] mb-1">Привет, наш дорогой друг!</h3>
+                <p class="text-sm text-gray-300 leading-relaxed">
+                    Мы в лаборатории <span class="text-[#E5A93B] font-semibold">BRIGHT</span> верим, что правильная книга, прочитанная в нужный момент, способна изменить жизнь. Мы убрали скучные академические описания и снабдили каждую книгу «тёплым» дружеским советом. Выбирай книги под своё настроение, сохраняй на личную полку и читай с удовольствием!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ИНТЕРАКТИВНАЯ КНИЖНАЯ ПОЛКА ПОЛЬЗОВАТЕЛЯ (ИЗБРАННОЕ) -->
+    <section id="user-shelf-section" class="max-w-6xl mx-auto mb-10 hidden z-10 relative">
+        <h3 class="text-xl font-bold text-[#E5A93B] mb-4 flex items-center gap-2">
+            <span>📚</span> Моя читательская полка <span id="shelf-count" class="text-xs bg-[#E5A93B] text-[#08101D] px-2 py-0.5 rounded-full">0</span>
+        </h3>
+        <div id="user-shelf-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 p-4 bg-[#11223A]/40 border border-[#E5A93B]/20 rounded-2xl min-h-[140px] items-center">
+            <!-- Сюда динамически добавляются отложенные книги -->
+            <p id="empty-shelf-text" class="col-span-full text-center text-sm text-gray-500 py-6 italic">На твоей полке пока пусто. Нажми на сердечко у любой книги, чтобы бережно отложить её на будущее!</p>
+        </div>
+    </section>
+
+    <!-- БЛОК УПРАВЛЕНИЯ: ФИЛЬТРЫ И ПОИСК -->
+    <section class="max-w-6xl mx-auto mb-8 z-10 relative">
+        <!-- Поиск книги -->
+        <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <div class="relative flex-1">
+                <input type="text" id="book-search" placeholder="Поиск книги по названию, автору или теме..." class="w-full bg-[#11223A] border border-[#E5A93B]/30 rounded-xl px-5 py-3 text-sm text-[#F8F9FA] placeholder-gray-500 focus:outline-none focus:border-[#E5A93B] transition-colors">
+                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">🔍</span>
+            </div>
+            
+            <!-- Интерактивный генератор случайных цитат -->
+            <button onclick="getRandomQuote()" class="bright-button px-5 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+                ✨ Подарить вдохновение
+            </button>
+        </div>
+
+        <!-- Тематические "Настроения" (Vibes) -->
+        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+            <button onclick="filterBooks('all')" class="vibe-btn active px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/40 text-[#E5A93B] hover:bg-[#E5A93B] hover:text-[#08101D] transition-all">
+                🌍 Все книги
+            </button>
+            <button onclick="filterBooks('motivation')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
+                🎯 Когда опускаются руки
+            </button>
+            <button onclick="filterBooks('leadership')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
+                👑 Хочу построить команду мечты
+            </button>
+            <button onclick="filterBooks('psychology')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
+                🧠 Понять себя и окружающих
+            </button>
+            <button onclick="filterBooks('productivity')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
+                📈 Как навести порядок в делах
+            </button>
+            <button onclick="filterBooks('soul')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
+                🍃 Для души и вкуса
+            </button>
+        </div>
+    </section>
+
+    <!-- ГЛАВНАЯ СЕТКА КАРТОЧЕК КНИГ -->
+    <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10 pb-20">
+        <!-- Книги будут отрисовываться динамически через JavaScript -->
+    </main>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ИНСПИРАЦИОННОЙ ЦИТАТЫ -->
+    <div id="quote-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-[#11223A] border-2 border-[#E5A93B] rounded-2xl max-w-lg w-full p-8 relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-[#E5A93B]/10 rounded-full blur-2xl"></div>
+            <button onclick="closeQuoteModal()" class="absolute right-4 top-4 text-gray-400 hover:text-white text-xl">✕</button>
+            <p class="text-4xl text-[#E5A93B] mb-4">“</p>
+            <p id="quote-text" class="text-lg md:text-xl font-medium italic text-gray-100 leading-relaxed mb-4">
+                Цитата загружается...
+            </p>
+            <p id="quote-author" class="text-sm text-[#E5A93B] font-bold text-right">— Автор книги</p>
+            <p id="quote-book" class="text-xs text-gray-400 text-right italic">из книги «Название»</p>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ С КНОПКОЙ "ХОЧУ НА КУРС" В СТИЛЕ REFS -->
+    <footer class="max-w-3xl mx-auto mt-16 text-center pb-12 z-10 relative">
+        <div class="bg-[#11223A] border border-[#E5A93B]/40 rounded-2xl p-8 max-w-md mx-auto gold-glow">
+            <h4 class="text-lg font-bold text-white mb-2">Хочешь развивать Soft Skills на практике?</h4>
+            <p class="text-xs text-gray-400 mb-6">Занятия 1-2 раза в неделю по 60 минут.<br>Индивидуально или в поддерживающих мини-группах.</p>
+            <button onclick="alert('Мы бережно зафиксировали твой интерес к обучению! Скоро наставник свяжется с тобой ❤️')" class="bright-button px-8 py-3 rounded-xl text-sm font-black uppercase tracking-wider">
+                Хочу на курс
+            </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-8">© 2026 BRIGHT: Лаборатория гибких навыков. Сделано с теплотой для близких.</p>
+    </footer>
+
+    <!-- JS СКРИПТ С НАШЕЙ ДУШЕВНОЙ СТРУКТУРОЙ И ДАННЫМИ -->
+    <script>
+        // Полная база книг с "Тёплыми дружескими советами"
+        const booksData = [
+            // Тайм-менеджмент
+            {
+                id: 1,
+                title: "Жесткий тайм-менеджмент",
+                author: "Дэн Кеннеди",
+                category: "productivity",
+                vibe: "motivation",
+                note: "Если ты чувствуешь, что все вокруг воруют твоё время — Дэн научит тебя говорить жёсткое, но безумно вежливое «нет». Это щит для твоих личных границ!",
+                badge: "Защита границ"
+            },
+            {
+                id: 2,
+                title: "Одноминутный менеджер и обезьяны",
+                author: "Кеннет Бланшар",
+                category: "productivity",
+                vibe: "leadership",
+                note: "Потрясающая вещь про делегирование. Ты больше не будешь тащить чужие проблемы (тех самых «обезьян») на своей спине. Позволь команде расти самой!",
+                badge: "Делегирование"
+            },
+            {
+                id: 3,
+                title: "Оставьте брезгливость, съешьте лягушку!",
+                author: "Брайан Трейси",
+                category: "productivity",
+                vibe: "productivity",
+                note: "«Лягушка» — это то самое дело, которое ты откладываешь уже неделю. Брайан расскажет, как проглотить её утром первой и весь день чувствовать себя героем.",
+                badge: "Против лени"
+            },
+            // Психология
+            {
+                id: 4,
+                title: "7 шагов к стабильной самооценке",
+                author: "Борис Литвак",
+                category: "psychology",
+                vibe: "psychology",
+                note: "Друг, твоя ценность не зависит от чужих оценок. Эта книга бережно разберёт, где твоя самооценка ломается, и поможет починить её раз и навсегда.",
+                badge: "Самоценность"
+            },
+            {
+                id: 5,
+                title: "Самооценка",
+                author: "Гленн Ширальди",
+                category: "psychology",
+                vibe: "psychology",
+                note: "Это настоящий лечебный курс от синдрома самозванца. Практические шаги помогут тебе увидеть свою настоящую силу без лишней самокритики.",
+                badge: "Практикум"
+            },
+            {
+                id: 6,
+                title: "Сила воли. Как развить и укрепить",
+                author: "Келли Макгонигал",
+                category: "psychology",
+                vibe: "productivity",
+                note: "Келли докажет тебе, что сила воли — это просто мышца. Её не нужно перегружать, её нужно бережно тренировать. И да — спать тоже очень важно!",
+                badge: "Самоконтроль"
+            },
+            {
+                id: 7,
+                title: "Думай медленно... решай быстро",
+                author: "Даниэль Канеман",
+                category: "psychology",
+                vibe: "psychology",
+                note: "Твоим мозгом управляют две хитрые системы. Канеман покажет, как они обманывают тебя каждый день, и как принимать решения с холодной головой.",
+                badge: "Интеллект"
+            },
+            {
+                id: 8,
+                title: "Спасите заложника. Как управлять эмоциями",
+                author: "Джордж Колризер",
+                category: "psychology",
+                vibe: "motivation",
+                note: "Даже если твои эмоции взяли тебя в заложники во время конфликта — эта книга научит договариваться с ними так, как это делают профессионалы на переговорах.",
+                badge: "Эмоции"
+            },
+            {
+                id: 9,
+                title: "Агрессия, или Так называемое зло",
+                author: "Конрад Лоренц",
+                category: "psychology",
+                vibe: "psychology",
+                note: "Поразительный взгляд на нашу природу. Лоренц объяснит, почему мы злимся и как эту огромную разрушительную энергию пустить на созидание.",
+                badge: "Этология"
+            },
+            {
+                id: 10,
+                title: "Искусство быть",
+                author: "Эрих Фромм",
+                category: "psychology",
+                vibe: "soul",
+                note: "Фромм учит искусству быть живым и подлинным, а не казаться кем-то ради чужого одобрения. Книга, которая дарит глубокое внутреннее спокойствие.",
+                badge: "Осознанность"
+            },
+            {
+                id: 11,
+                title: "Эмоциональный интеллект",
+                author: "Дэниел Гоулман",
+                category: "psychology",
+                vibe: "psychology",
+                note: "Классика, доказавшая всему миру: умение понимать свои и чужие чувства гораздо важнее для счастья, чем любые золотые медали и школьные оценки.",
+                badge: "EQ"
+            },
+            // Ораторское искусство
+            {
+                id: 12,
+                title: "Принцип пирамиды Минто",
+                author: "Барбара Минто",
+                category: "communication",
+                vibe: "productivity",
+                note: "Хочешь, чтобы твои презентации и речи слушали затаив дыхание? Барбара научит тебя упаковывать любые мысли в идеальные логические структуры.",
+                badge: "Логика речи"
+            },
+            {
+                id: 13,
+                title: "Я слышу, что вы думаете на самом деле",
+                author: "Марк Гоулстон",
+                category: "communication",
+                vibe: "psychology",
+                note: "Секреты эмпатического общения. Ты научишься не просто слышать слова, а понимать истинные мотивы людей. Это открывает любые двери.",
+                badge: "Эмпатия"
+            },
+            // Педагогика
+            {
+                id: 14,
+                title: "Мастерство учителя",
+                author: "Дуг Лемов",
+                category: "pedagogy",
+                vibe: "leadership",
+                note: "Полезно не только учителям, но и лидерам команд. О том, как удержать внимание аудитории и превратить любой сложный урок в увлекательную игру.",
+                badge: "Управление"
+            },
+            {
+                id: 15,
+                title: "Искусство обучать",
+                author: "Джули Дирксен",
+                category: "pedagogy",
+                vibe: "productivity",
+                note: "Дирксен показывает, как устроен мозг того, кого мы учим. Невероятно практичное руководство по созданию вовлекающего контента.",
+                badge: "Методология"
+            },
+            {
+                id: 16,
+                title: "Тайная опора: привязанность в жизни ребенка",
+                author: "Людмила Петрановская",
+                category: "pedagogy",
+                vibe: "soul",
+                note: "Библия для родителей и тех, кто хочет понять истоки своих взрослых психологических травм. Книга, наполненная бесконечной любовью и поддержкой.",
+                badge: "Семья"
+            },
+            // Бизнес
+            {
+                id: 17,
+                title: "Пиши, сокращай",
+                author: "Максим Ильяхов, Людмила Сарычева",
+                category: "business",
+                vibe: "productivity",
+                note: "Забудь про водянистые тексты и вежливую фальшь. Твои письма станут честными, уважительными и по-настоящему полезными для читателя.",
+                badge: "Копирайтинг"
+            },
+            {
+                id: 18,
+                title: "Организационная культура и лидерство",
+                author: "Эдгар Шейн",
+                category: "business",
+                vibe: "leadership",
+                note: "Лидер формирует культуру, а культура формирует компанию. Эта книга поможет тебе понять скрытый ДНК твоей команды и бережно его улучшить.",
+                badge: "Культура"
+            },
+            {
+                id: 19,
+                title: "Доставляя счастье",
+                author: "Тони Шей",
+                category: "business",
+                vibe: "soul",
+                note: "Потрясающая, тёплая история Zappos. О том, как построить бизнес, ставя на первое место искреннюю заботу и счастье каждого клиента.",
+                badge: "Клиенты"
+            },
+            {
+                id: 20,
+                title: "Scrum. Революционный метод управления",
+                author: "Джефф Сазерленд",
+                category: "business",
+                vibe: "leadership",
+                note: "Устал от бесконечной бюрократии и просроченных дедлайнов? Попробуй Scrum — метод, который заставит твою команду двигаться легко и гибко.",
+                badge: "Agile"
+            },
+            {
+                id: 21,
+                title: "От хорошего к великому",
+                author: "Джим Коллинз",
+                category: "business",
+                vibe: "leadership",
+                note: "Исследование того, как обычные компании становятся великими лидерами рынка благодаря дисциплинированным людям и четкому фокусу.",
+                badge: "Масштаб"
+            },
+            {
+                id: 22,
+                title: "Спроси маму",
+                author: "Роберт Фитцпатрик",
+                category: "business",
+                vibe: "productivity",
+                note: "Друг, если ты планируешь новый проект, никогда не спрашивай маму «хорошая ли это идея». Роберт научит тебя задавать правильные вопросы людям.",
+                badge: "CustDev"
+            },
+            {
+                id: 23,
+                title: "Стратегия голубого океана",
+                author: "Чан Ким, Рене Моборн",
+                category: "business",
+                vibe: "motivation",
+                note: "Хватит толкаться локтями на тесном рынке! Эта книга научит тебя создавать уникальные ниши, где конкурентов просто нет.",
+                badge: "Стратегия"
+            },
+            {
+                id: 24,
+                title: "Разверните ваш корабль",
+                author: "Дэвид Марке",
+                category: "business",
+                vibe: "leadership",
+                note: "Как превратить пассивных исполнителей в вовлеченных лидеров. Уникальный опыт капитана атомной подводной лодки.",
+                badge: "Лидерство"
+            }
+        ];
+
+        // База вдохновляющих цитат
+        const quotes = [
+            { text: "Человека можно уничтожить, но его нельзя победить.", author: "Эрнест Хемингуэй", book: "Старик и море" },
+            { text: "У того, кто имеет «Зачем» жить, может вынести почти любое «Как».", author: "Виктор Франкл", book: "Сказать жизни 'Да!'" },
+            { text: "Забота о клиенте — это не отдел, это философия всей твоей компании.", author: "Тони Шей", book: "Доставляя счастье" },
+            { text: "Если вы не можете объяснить это просто, значит, вы сами не понимаете этого до конца.", author: "Альберт Эйнштейн", book: "Искусство объяснять" },
+            { text: "Спросите людей о вещах, которые происходят в их жизни, а не об их мнении о вашей идее.", author: "Роберт Фитцпатрик", book: "Спроси маму" },
+            { text: "Сила воли — это способность делать то, что действительно важно, даже когда это чертовски трудно.", author: "Келли Макгонигал", book: "Сила воли" }
+        ];
+
+        // Массив для хранения избранных книг пользователя
+        let userShelf = JSON.parse(localStorage.getItem('bright_user_shelf')) || [];
+
+        // Функция рендеринга карточек книг
+        function renderBooks(booksToRender) {
+            const mainContainer = document.querySelector('main');
+            mainContainer.innerHTML = '';
+
+            if (booksToRender.length === 0) {
+                mainContainer.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-gray-400 text-lg">Увы, друг, мы не нашли книг по этому запросу...</p>
+                        <button onclick="resetFilters()" class="text-[#E5A93B] underline text-sm mt-2 hover:text-[#FFF3CD]">Сбросить поиск</button>
+                    </div>
+                `;
+                return;
+            }
+
+            booksToRender.forEach(book => {
+                const isFavorite = userShelf.includes(book.id);
+                const card = document.createElement('div');
+                card.className = "flip-card h-[380px] w-full rounded-2xl relative cursor-pointer";
+                card.id = `book-card-${book.id}`;
+
+                card.innerHTML = `
+                    <div class="flip-card-inner duration-500 w-full h-full">
+                        <!-- ЛИЦЕВАЯ СТОРОНА КАРТОЧКИ (Обложка) -->
+                        <div class="flip-card-front bg-[#11223A] border border-[#E5A93B]/20 rounded-2xl p-6 flex flex-col justify-between hover:border-[#E5A93B]/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(229,169,59,0.15)]">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <span class="text-[10px] bg-[#E5A93B]/10 text-[#E5A93B] border border-[#E5A93B]/30 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">${book.badge}</span>
+                                    <button onclick="toggleFavorite(event, ${book.id})" class="text-xl text-gray-500 hover:text-red-500 transition-colors focus:outline-none">
+                                        ${isFavorite ? '❤️' : '🤍'}
+                                    </button>
+                                </div>
+                                <h3 class="text-xl font-extrabold text-white leading-tight mb-2">${book.title}</h3>
+                                <p class="text-sm text-[#E5A93B] font-medium mb-4">${book.author}</p>
+                            </div>
+                            
+                            <!-- Наш тёплый стикер-заметка от друга -->
+                            <div class="bg-[#FFF3CD] text-[#5D4037] p-4 rounded-xl relative rotate-[-1deg] shadow-md transform hover:rotate-0 transition-transform duration-300">
+                                <div class="absolute top-0 right-2 w-3 h-3 bg-red-400/50 rounded-full"></div> <!-- Стилизованная кнопка/булавка -->
+                                <p class="text-xs font-bold uppercase tracking-wider mb-1 text-red-800">Совет от друга:</p>
+                                <p class="handwritten text-base leading-snug line-clamp-3">${book.note}</p>
+                            </div>
+
+                            <div class="flex justify-between items-center text-xs text-gray-500 mt-2">
+                                <span>Кликни, чтобы перевернуть</span>
+                                <span>📖</span>
+                            </div>
+                        </div>
+
+                        <!-- ОБРАТНАЯ СТОРОНА КАРТОЧКИ -->
+                        <div class="flip-card-back bg-[#13223A] border-2 border-[#E5A93B] rounded-2xl p-6 flex flex-col justify-between shadow-[inset_0_0_20px_rgba(229,169,59,0.2)]">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <span class="text-xs text-[#E5A93B] font-semibold">Лаборатория BRIGHT</span>
+                                    <button onclick="toggleFavorite(event, ${book.id})" class="text-xl text-gray-500 hover:text-red-500 transition-colors focus:outline-none">
+                                        ${isFavorite ? '❤️' : '🤍'}
+                                    </button>
+                                </div>
+                                <h4 class="text-lg font-bold text-white mb-2">${book.title}</h4>
+                                <p class="text-xs text-gray-400 mb-4">Автор: ${book.author}</p>
+                                
+                                <div class="border-t border-[#E5A93B]/20 pt-4">
+                                    <p class="text-xs text-[#E5A93B] font-bold mb-1 uppercase tracking-wider">Почему мы советуем:</p>
+                                    <p class="text-xs text-gray-300 leading-relaxed">${book.note}</p>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button onclick="toggleCard(${book.id})" class="text-xs text-[#E5A93B] hover:underline">Вернуться к обложке</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Позволяем карточке переворачиваться по клику на неё (но не при клике на лайк)
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        card.classList.toggle('flipped');
+                    }
+                });
+
+                mainContainer.appendChild(card);
+            });
+        }
+
+        // Переворот конкретной карточки программно
+        function toggleCard(id) {
+            const card = document.getElementById(`book-card-${id}`);
+            if (card) card.classList.toggle('flipped');
+        }
+
+        // Добавление/удаление из личной полки (Избранное)
+        function toggleFavorite(event, id) {
+            event.stopPropagation(); // Предотвращаем переворот карточки при лайке
+            
+            const index = userShelf.indexOf(id);
+            if (index === -1) {
+                userShelf.push(id);
+            } else {
+                userShelf.splice(index, 1);
+            }
+
+            localStorage.setItem('bright_user_shelf', JSON.stringify(userShelf));
+            updateShelf();
+            
+            // Перерисовываем карточки, чтобы обновить сердечки
+            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+            filterBooks(activeFilter);
+        }
+
+        // Обновление личной полки пользователя
+        function updateShelf() {
+            const shelfSection = document.getElementById('user-shelf-section');
+            const shelfContainer = document.getElementById('user-shelf-container');
+            const shelfCount = document.getElementById('shelf-count');
+
+            if (userShelf.length > 0) {
+                shelfSection.classList.remove('hidden');
+                shelfCount.innerText = userShelf.length;
+                
+                // Рендерим маленькие корешки книг на полке
+                shelfContainer.innerHTML = '';
+                userShelf.forEach(id => {
+                    const book = booksData.find(b => b.id === id);
+                    if (book) {
+                        const bookSpine = document.createElement('div');
+                        bookSpine.className = "bg-[#E5A93B] text-[#08101D] p-3 rounded-lg flex flex-col justify-between h-24 shadow-md border-l-4 border-[#B8860B] hover:-translate-y-2 transition-transform duration-300 relative group cursor-pointer";
+                        bookSpine.innerHTML = `
+                            <div class="text-[9px] font-bold uppercase tracking-wider overflow-hidden text-ellipsis whitespace-nowrap">${book.author}</div>
+                            <div class="text-xs font-black leading-tight line-clamp-2">${book.title}</div>
+                            <button onclick="removeFavoriteFromSpine(event, ${book.id})" class="absolute top-1 right-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-700">✕</button>
+                        `;
+                        bookSpine.addEventListener('click', () => {
+                            const card = document.getElementById(`book-card-${book.id}`);
+                            if (card) {
+                                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                card.classList.add('gold-glow');
+                                setTimeout(() => card.classList.remove('gold-glow'), 2000);
+                            }
+                        });
+                        shelfContainer.appendChild(bookSpine);
+                    }
+                });
+            } else {
+                shelfSection.classList.add('hidden');
+            }
+        }
+
+        // Удаление книги прямо с полки (по крестику на корешке)
+        function removeFavoriteFromSpine(event, id) {
+            event.stopPropagation();
+            userShelf = userShelf.filter(item => item !== id);
+            localStorage.setItem('bright_user_shelf', JSON.stringify(userShelf));
+            updateShelf();
+            
+            // Перерисовываем сетку
+            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+            filterBooks(activeFilter);
+        }
+
+        // Фильтрация книг по "Настроению" (Vibe)
+        function filterBooks(vibe) {
+            // Переключаем активный класс на кнопках
+            document.querySelectorAll('.vibe-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-[#E5A93B]', 'text-[#08101D]');
+                btn.classList.add('bg-[#11223A]', 'text-gray-400');
+            });
+
+            const activeBtn = Array.from(document.querySelectorAll('.vibe-btn')).find(btn => btn.getAttribute('onclick').includes(`'${vibe}'`));
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-[#E5A93B]', 'text-[#08101D]');
+                activeBtn.classList.remove('bg-[#11223A]', 'text-gray-400');
+            }
+
+            let filtered = booksData;
+            if (vibe !== 'all') {
+                filtered = booksData.filter(b => b.vibe === vibe || b.category === vibe);
+            }
+
+            // Учитываем текущий поисковый запрос
+            const searchVal = document.getElementById('book-search').value.toLowerCase();
+            if (searchVal) {
+                filtered = filtered.filter(b => 
+                    b.title.toLowerCase().includes(searchVal) || 
+                    b.author.toLowerCase().includes(searchVal) || 
+                    b.note.toLowerCase().includes(searchVal)
+                );
+            }
+
+            renderBooks(filtered);
+        }
+
+        // Поиск в реальном времени
+        document.getElementById('book-search').addEventListener('input', (e) => {
+            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+            filterBooks(activeFilter);
+        });
+
+        // Сбросить фильтры
+        function resetFilters() {
+            document.getElementById('book-search').value = '';
+            filterBooks('all');
+        }
+
+        // Показ случайной цитаты (для вдохновения)
+        function getRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+
+            document.getElementById('quote-text').innerText = quote.text;
+            document.getElementById('quote-author').innerText = `— ${quote.author}`;
+            document.getElementById('quote-book').innerText = `из книги «${quote.book}»`;
+
+            document.getElementById('quote-modal').classList.remove('hidden');
+        }
+
+        function closeQuoteModal() {
+            document.getElementById('quote-modal').classList.add('hidden');
+        }
+
+        // Запуск при загрузке страницы
+        window.onload = function() {
+            renderBooks(booksData);
+            updateShelf();
+        };
+    </script>
+</body>
+</html>
