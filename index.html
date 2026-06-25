@@ -7,7 +7,7 @@
     <!-- Подключаем Tailwind CSS для современной верстки -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Шрифты Google: Montserrat для интерфейса, Caveat для душевных рукописных записок -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght=600;700&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -73,7 +73,7 @@
             width: 100%;
             height: 100%;
             text-align: left;
-            transition: transform 0.6s;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
         }
 
@@ -91,6 +91,17 @@
 
         .flip-card-back {
             transform: rotateY(180deg);
+        }
+
+        /* Кнопки фильтров */
+        .vibe-btn {
+            transition: all 0.2s ease;
+        }
+        .vibe-btn.active {
+            background-color: #E5A93B !important;
+            color: #08101D !important;
+            border-color: #E5A93B !important;
+            box-shadow: 0 0 10px rgba(229, 169, 59, 0.3);
         }
     </style>
 </head>
@@ -136,12 +147,12 @@
         <h1 class="text-3xl md:text-5xl font-black tracking-tight text-[#F8F9FA]">
             BRIGHT: <span class="text-[#E5A93B] gold-text-glow">КНИЖНАЯ ПОЛКА</span>
         </h1>
-        <p class="text-sm md:text-base text-gray-400 mt-2 max-w-xl">
-            Твой персональный навигатор по миру лучших книг. Мы собрали этот список с теплом и заботой, чтобы помочь тебе расти каждый день.
+        <p class="text-sm md:text-base text-gray-400 mt-2 max-w-xl font-medium">
+            Твой персональный навигатор по миру лучших книг. Мы собрали этот список с теплотой и заботой, чтобы помочь тебе расти каждый день.
         </p>
     </header>
 
-    <!-- ВВОДНОЕ "ПИСЬМО ОТ ДРУГА" (Создает атмосферу заботы) -->
+    <!-- ВВОДНОЕ "ПИСЬМО ОТ ДРУГА" -->
     <section class="max-w-4xl mx-auto mb-10 bg-[#13223A] border border-dashed border-[#E5A93B]/40 p-6 rounded-2xl relative overflow-hidden z-10">
         <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#E5A93B]/5 rounded-full blur-2xl"></div>
         <div class="flex flex-col md:flex-row items-center gap-6">
@@ -149,7 +160,7 @@
             <div>
                 <h3 class="text-lg font-bold text-[#E5A93B] mb-1">Привет, наш дорогой друг!</h3>
                 <p class="text-sm text-gray-300 leading-relaxed">
-                    Мы в лаборатории <span class="text-[#E5A93B] font-semibold">BRIGHT</span> верим, что правильная книга, прочитанная в нужный момент, способна изменить жизнь. Мы убрали скучные академические описания и снабдили каждую книгу «тёплым» дружеским советом. Выбирай книги под своё настроение, сохраняй на личную полку и читай с удовольствием!
+                    Мы в лаборатории <span class="text-[#E5A93B] font-semibold">BRIGHT</span> верим, что правильная книга, прочитанная в нужный момент, способна изменить жизнь. Мы убрали скучные описания и снабдили каждую книгу «тёплым» дружеским советом. Выбирай книги под своё настроение или возраст, сохраняй на личную полку и читай с удовольствием!
                 </p>
             </div>
         </div>
@@ -161,52 +172,32 @@
             <span>📚</span> Моя читательская полка <span id="shelf-count" class="text-xs bg-[#E5A93B] text-[#08101D] px-2 py-0.5 rounded-full">0</span>
         </h3>
         <div id="user-shelf-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 p-4 bg-[#11223A]/40 border border-[#E5A93B]/20 rounded-2xl min-h-[140px] items-center">
-            <!-- Сюда динамически добавляются отложенные книги -->
             <p id="empty-shelf-text" class="col-span-full text-center text-sm text-gray-500 py-6 italic">На твоей полке пока пусто. Нажми на сердечко у любой книги, чтобы бережно отложить её на будущее!</p>
         </div>
     </section>
 
     <!-- БЛОК УПРАВЛЕНИЯ: ФИЛЬТРЫ И ПОИСК -->
     <section class="max-w-6xl mx-auto mb-8 z-10 relative">
-        <!-- Поиск книги -->
         <div class="flex flex-col md:flex-row gap-4 mb-6">
             <div class="relative flex-1">
-                <input type="text" id="book-search" placeholder="Поиск книги по названию, автору или теме..." class="w-full bg-[#11223A] border border-[#E5A93B]/30 rounded-xl px-5 py-3 text-sm text-[#F8F9FA] placeholder-gray-500 focus:outline-none focus:border-[#E5A93B] transition-colors">
+                <input type="text" id="book-search" placeholder="Поиск книги по названию, автору или совету..." class="w-full bg-[#11223A] border border-[#E5A93B]/30 rounded-xl px-5 py-3 text-sm text-[#F8F9FA] placeholder-gray-500 focus:outline-none focus:border-[#E5A93B] transition-colors">
                 <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">🔍</span>
             </div>
             
-            <!-- Интерактивный генератор случайных цитат -->
             <button onclick="getRandomQuote()" class="bright-button px-5 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
                 ✨ Подарить вдохновение
             </button>
         </div>
 
-        <!-- Тематические "Настроения" (Vibes) -->
-        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
-            <button onclick="filterBooks('all')" class="vibe-btn active px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/40 text-[#E5A93B] hover:bg-[#E5A93B] hover:text-[#08101D] transition-all">
-                🌍 Все книги
-            </button>
-            <button onclick="filterBooks('motivation')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
-                🎯 Когда опускаются руки
-            </button>
-            <button onclick="filterBooks('leadership')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
-                👑 Хочу построить команду мечты
-            </button>
-            <button onclick="filterBooks('psychology')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
-                🧠 Понять себя и окружающих
-            </button>
-            <button onclick="filterBooks('productivity')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
-                📈 Как навести порядок в делах
-            </button>
-            <button onclick="filterBooks('soul')" class="vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B] transition-all">
-                🍃 Для души и вкуса
-            </button>
+        <!-- Разделы (Фильтры) - Сгенерированы по ТЗ -->
+        <div class="flex flex-wrap gap-2 justify-center" id="categoryFilters">
+            <!-- Кнопки разделов добавятся через JS -->
         </div>
     </section>
 
     <!-- ГЛАВНАЯ СЕТКА КАРТОЧЕК КНИГ -->
     <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10 pb-20">
-        <!-- Книги будут отрисовываться динамически через JavaScript -->
+        <!-- Книги отрисовываются динамически через JavaScript -->
     </main>
 
     <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ИНСПИРАЦИОННОЙ ЦИТАТЫ -->
@@ -223,12 +214,11 @@
         </div>
     </div>
 
-    <!-- ПОДВАЛ С КНОПКОЙ "ХОЧУ НА КУРС" В СТИЛЕ REFS -->
+    <!-- ПОДВАЛ С КНОПКОЙ "ХОЧУ НА КУРС" -->
     <footer class="max-w-3xl mx-auto mt-16 text-center pb-12 z-10 relative">
         <div class="bg-[#11223A] border border-[#E5A93B]/40 rounded-2xl p-8 max-w-md mx-auto gold-glow">
             <h4 class="text-lg font-bold text-white mb-2">Хочешь развивать Soft Skills на практике?</h4>
             <p class="text-xs text-gray-400 mb-6">Занятия 1-2 раза в неделю по 60 минут.<br>Индивидуально или в поддерживающих мини-группах.</p>
-            <!-- Кнопка изменена на прямую ссылку в Telegram с готовым текстом письма -->
             <a href="https://t.me/bright_lab_skills?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%BA%D1%83%D1%80%D1%81%20%D0%BF%D0%BE%20Soft%20Skills" target="_blank" class="bright-button px-8 py-3 rounded-xl text-sm font-black uppercase tracking-wider inline-block">
                 Хочу на курс
             </a>
@@ -236,245 +226,711 @@
         <p class="text-xs text-gray-500 mt-8">© 2026 BRIGHT: Лаборатория гибких навыков. Сделано с теплотой для близких.</p>
     </footer>
 
-    <!-- JS СКРИПТ С НАШЕЙ ДУШЕВНОЙ СТРУКТУРОЙ И ДАННЫМИ -->
+    <!-- JS СКРИПТ -->
     <script>
-        // Полная база книг с "Тёплыми дружескими советами"
+        // ==========================================
+        // 📋 СПИСОК РАЗДЕЛОВ (КАТЕГОРИЙ) ДЛЯ КЛИЕНТОВ
+        // ==========================================
+        const categories = [
+            { id: "all", name: "Все книги" },
+            { id: "kids_5_8", name: "Для 5-8 лет" },
+            { id: "kids_9_13", name: "Для 9-13" },
+            { id: "teens_14_17", name: "Для 14-17" },
+            { id: "get_things_done", name: "Как навести порядок в делах" },
+            { id: "pedagogy", name: "Педагогика" },
+            { id: "understand_self", name: "Понять себя и окружающих" },
+            { id: "soul_and_taste", name: "Для души и вкуса" },
+            { id: "literature_reading", name: "Литературное чтение с пользой" },
+            { id: "dream_team", name: "Хочу построить команду мечты" }
+        ];
+
+        let activeFilter = "all";
+
+        // ==========================================
+        // 📚 БАЗА ДАННЫХ КНИГ (ОДНА КНИГА В НЕСКОЛЬКИХ РАЗДЕЛАХ)
+        // ==========================================
         const booksData = [
-            // Тайм-менеджмент
+            // ТАЙМ-МЕНЕДЖМЕНТ И ПРОДУКТИВНОСТЬ
             {
                 id: 1,
                 title: "Жесткий тайм-менеджмент",
                 author: "Дэн Кеннеди",
-                category: "productivity",
-                vibe: "motivation",
-                note: "Если ты чувствуешь, что все вокруг воруют твоё время — Дэн научит тебя говорить жёсткое, но безумно вежливое «нет». Это щит для твоих личных границ!",
-                badge: "Защита границ"
+                badge: "Дисциплина",
+                note: "Потрясающая книга о том, как поставить на место наглецов, крадущих твоё время. Резко, но невероятно действенно!",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/den-kennedi/zhestkiy-taym-menedzhment-vozmit-svou-zhizn-pod-kontrol-6330999/"
             },
             {
                 id: 2,
-                title: "Одноминутный менеджер и обезьяны",
-                author: "Кеннет Бланшар",
-                category: "productivity",
-                vibe: "leadership",
-                note: "Потрясающая вещь про делегирование. Ты больше не будешь тащить чужие проблемы (тех самых «обезьян») на своей спине. Позволь команде расти самой!",
-                badge: "Делегирование"
+                title: "Чек-лист: Тайм-Менеджмент",
+                author: "BRIGHT Lab",
+                badge: "Практикум",
+                note: "Удобная выжимка главных правил планирования дня от нашей лаборатории. Без лишней воды — бери и делай!",
+                categories: ["get_things_done"],
+                link: "#"
             },
             {
                 id: 3,
-                title: "Оставьте брезгливость, съешьте лягушку!",
-                author: "Брайан Трейси",
-                category: "productivity",
-                vibe: "productivity",
-                note: "«Лягушка» — это то самое дело, которое ты откладываешь уже неделю. Брайан расскажет, как проглотить её утром первой и весь день чувствовать себя героем.",
-                badge: "Против лени"
+                title: "Одноминутный менеджер и обезьяны",
+                author: "Кеннет Бланшар",
+                badge: "Делегирование",
+                note: "О том, как перестать взваливать на свои плечи проблемы сотрудников и научить команду действовать самостоятельно.",
+                categories: ["get_things_done", "dream_team"],
+                link: "https://www.litres.ru/book/kennet-blanshar/odnominutnyy-menedzher-i-obezyany-172081/"
             },
-            // Психология
             {
                 id: 4,
-                title: "7 шагов к стабильной самооценке",
-                author: "Борис Литвак",
-                category: "psychology",
-                vibe: "psychology",
-                note: "Друг, твоя ценность не зависит от чужих оценок. Эта книга бережно разберёт, где твоя самооценка ломается, и поможет починить её раз и навсегда.",
-                badge: "Самоценность"
+                title: "Оставьте брезгливость, съешьте лягушку!",
+                author: "Брайан Трейси",
+                badge: "Эффективность",
+                note: "Секрет прост: делай самое сложное и неприятное дело («лягушку») с самого утра. И весь остальной день ты — победитель!",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/brayan-treysi/ostavte-brezglivost-seste-lyagushku-21-metod-povysheniya-eff-6232339/"
             },
             {
                 id: 5,
-                title: "Самооценка",
-                author: "Гленн Ширальди",
-                category: "psychology",
-                vibe: "psychology",
-                note: "Это настоящий лечебный курс от синдрома самозванца. Практические шаги помогут тебе увидеть свою настоящую силу без лишней самокритики.",
-                badge: "Практикум"
+                title: "Как привести дела в порядок",
+                author: "Дэвид Аллен",
+                badge: "GTD",
+                note: "Освободи свой мозг от хранения списков задач. Великая система GTD поможет организовать все дела от быта до глобальных проектов.",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/devid-allen/kak-privesti-dela-v-poryadok-iskusstvo-produktivnosti-b-21226759/"
             },
             {
                 id: 6,
-                title: "Сила воли. Как развить и укрепить",
-                author: "Келли Макгонигал",
-                category: "psychology",
-                vibe: "productivity",
-                note: "Келли докажет тебе, что сила воли — это просто мышца. Её не нужно перегружать, её нужно бережно тренировать. И да — спать тоже очень важно!",
-                badge: "Самоконтроль"
+                title: "Пиши, сокращай",
+                author: "Максим Ильяхов, Людмила Сарычева",
+                badge: "Текст",
+                note: "Библия информационного стиля. Учит писать кратко, ясно и убедительно, проявляя заботу и глубокое уважение к читателю.",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/maksim-ilyahov/pishi-sokraschay-kak-sozdavat-silnyy-tekst-21946894/"
             },
             {
                 id: 7,
-                title: "Думай медленно... решай быстро",
-                author: "Даниэль Канеман",
-                category: "psychology",
-                vibe: "psychology",
-                note: "Твоим мозгом управляют две хитрые системы. Канеман покажет, как они обманывают тебя каждый день, и как принимать решения с холодной головой.",
-                badge: "Интеллект"
+                title: "Новые правила деловой переписки",
+                author: "М. Ильяхов, Л. Сарычева",
+                badge: "Общение",
+                note: "Как писать письма коллегам и клиентам так, чтобы они хотели вам помочь, а не отправить ваше письмо в спам.",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/ludmila-sarycheva/novye-pravila-delovoy-perepiski-38827981/"
             },
+
+            // ПСИХОЛОГИЯ И САМОРАЗВИТИЕ
             {
                 id: 8,
-                title: "Спасите заложника. Как управлять эмоциями",
-                author: "Джордж Колризер",
-                category: "psychology",
-                vibe: "motivation",
-                note: "Даже если твои эмоции взяли тебя в заложники во время конфликта — эта книга научит договариваться с ними так, как это делают профессионалы на переговорах.",
-                badge: "Эмоции"
+                title: "Токсичные люди",
+                author: "Шахида Араби",
+                badge: "Границы",
+                note: "Защити себя от манипуляций и эмоционального выгорания. Книга учит беречь свои нервы и распознавать деструктивное поведение.",
+                categories: ["understand_self"],
+                link: "https://www.litres.ru/book/shahida-arabi/toksichnye-ludi-kak-zaschitit-sebya-ot-narcissov-gazlayterov-50436855/"
             },
             {
                 id: 9,
-                title: "Агрессия, или Так называемое зло",
-                author: "Конрад Лоренц",
-                category: "psychology",
-                vibe: "psychology",
-                note: "Поразительный взгляд на нашу природу. Лоренц объяснит, почему мы злимся и как эту огромную разрушительную энергию пустить на созидание.",
-                badge: "Этология"
+                title: "7 шагов к стабильной самооценке",
+                author: "Борис Литвак",
+                badge: "Психология",
+                note: "Твоя ценность не зависит от чужих оценок и лайков. Книга поможет построить непоколебимую уверенность в своих силах.",
+                categories: ["understand_self"],
+                link: "https://www.litres.ru/book/boris-litvak/7-shagov-k-stabilnoy-samoocenke-25656113/"
             },
             {
                 id: 10,
-                title: "Искусство быть",
-                author: "Эрих Фромм",
-                category: "psychology",
-                vibe: "soul",
-                note: "Фромм учит искусству быть живым и подлинным, а не казаться кем-то ради чужого одобрения. Книга, которая дарит глубокое внутреннее спокойствие.",
-                badge: "Осознанность"
+                title: "Самооценка",
+                author: "Гленн Ширальди",
+                badge: "Принятие",
+                note: "Очень тёплый психологический практикум, который поможет тебе избавиться от критика внутри и принять себя со всеми плюсами.",
+                categories: ["understand_self"],
+                link: "https://www.litres.ru/book/glenn-shiraldi/samoocenka-poshagovoe-rukovodstvo-po-preodoleniu-somneni-53531122/"
             },
             {
                 id: 11,
-                title: "Эмоциональный интеллект",
-                author: "Дэниел Гоулман",
-                category: "psychology",
-                vibe: "psychology",
-                note: "Классика, доказавшая всему миру: умение понимать свои и чужие чувства гораздо важнее для счастья, чем любые золотые медали и школьные оценки.",
-                badge: "EQ"
+                title: "Сила воли",
+                author: "Келли Макгонигал",
+                badge: "Привычки",
+                note: "Сила воли — это просто мышца, которую нельзя перегружать, но можно натренировать. Научный и заботливый подход к привычкам.",
+                categories: ["understand_self", "get_things_done"],
+                link: "https://www.litres.ru/book/kelli-makgonigal/sila-voli-kak-razvit-i-ukrepit-3913076/"
             },
-            // Ораторское искусство
             {
                 id: 12,
-                title: "Принцип пирамиды Минто",
-                author: "Барбара Минто",
-                category: "communication",
-                vibe: "productivity",
-                note: "Хочешь, чтобы твои презентации и речи слушали затаив дыхание? Барбара научит тебя упаковывать любые мысли в идеальные логические структуры.",
-                badge: "Логика речи"
+                title: "Думай медленно... решай быстро",
+                author: "Даниэль Канеман",
+                badge: "Мышление",
+                note: "Пойми, как твой мозг принимает решения на самом деле, почему мы ошибаемся и верим в иллюзии. Полезно и для жизни, и для бизнеса.",
+                categories: ["understand_self", "get_things_done"],
+                link: "https://www.litres.ru/book/daniel-kaneman/dumay-medlenno-reshay-bystro-6402488/"
             },
             {
                 id: 13,
-                title: "Я слышу, что вы думаете на самом деле",
-                author: "Марк Гоулстон",
-                category: "communication",
-                vibe: "psychology",
-                note: "Секреты эмпатического общения. Ты научишься не просто слышать слова, а понимать истинные мотивы людей. Это открывает любые двери.",
-                badge: "Эмпатия"
+                title: "Спасти заложника",
+                author: "Джордж Колризер",
+                badge: "Переговоры",
+                note: "Ошеломительные приёмы ведения диалога в моменты жесточайших споров и конфликтов. Не давай эмоциям взять тебя под контроль.",
+                categories: ["understand_self", "dream_team"],
+                link: "https://www.litres.ru/book/dzhordzh-kolrizer/spasite-zalozhnika-kak-razreshat-konflikty-i-vliyat-na-lude-184568/"
             },
-            // Педагогика
             {
                 id: 14,
-                title: "Мастерство учителя",
-                author: "Дуг Лемов",
-                category: "pedagogy",
-                vibe: "leadership",
-                note: "Полезно не только учителям, но и лидерам команд. О том, как удержать внимание аудитории и превратить любой сложный урок в увлекательную игру.",
-                badge: "Управление"
+                title: "Агрессия, или Так называемое зло",
+                author: "Конрад Лоренц",
+                badge: "Природа",
+                note: "Потрясающий анализ природы злости. Пойми, откуда берется агрессия и как превратить её в мощное топливо для достижений.",
+                categories: ["understand_self"],
+                link: "https://www.litres.ru/book/konrad-lorenc/agressiya-ili-tak-nazyvaemoe-zlo-48359744/"
             },
             {
                 id: 15,
-                title: "Искусство обучать",
-                author: "Джули Дирксен",
-                category: "pedagogy",
-                vibe: "productivity",
-                note: "Дирксен показывает, как устроен мозг того, кого мы учим. Невероятно практичное руководство по созданию вовлекающего контента.",
-                badge: "Методология"
+                title: "Искусство быть",
+                author: "Эрих Фромм",
+                badge: "Философия",
+                note: "Фромм учит великому искусству — быть собой в мире бесконечного потребления и масок. Книга, которая дарит душевный покой.",
+                categories: ["understand_self", "soul_and_taste"],
+                link: "https://www.litres.ru/book/erih-fromm/iskusstvo-byt-128267/"
             },
             {
                 id: 16,
-                title: "Тайная опора: привязанность в жизни ребенка",
-                author: "Людмила Петрановская",
-                category: "pedagogy",
-                vibe: "soul",
-                note: "Библия для родителей и тех, кто хочет понять истоки своих взрослых психологических травм. Книга, наполненная бесконечной любовью и поддержкой.",
-                badge: "Семья"
+                title: "Эмоциональный интеллект",
+                author: "Дэниел Гоулман",
+                badge: "Эмпатия",
+                note: "Книга доказала всему миру: умение понимать свои и чужие чувства (EQ) влияет на твоё счастье гораздо больше, чем оценки по IQ.",
+                categories: ["understand_self", "dream_team"],
+                link: "https://www.litres.ru/book/deniel-goulman/emocionalnyy-intellekt-6330594/"
             },
-            // Бизнес
+
+            // ОРАТОРСКОЕ ИСКУССТВО И ОБЩЕНИЕ
             {
                 id: 17,
-                title: "Пиши, сокращай",
-                author: "Максим Ильяхов, Людмила Сарычева",
-                category: "business",
-                vibe: "productivity",
-                note: "Забудь про водянистые тексты и вежливую фальшь. Твои письма станут честными, уважительными и по-настоящему полезными для читателя.",
-                badge: "Копирайтинг"
+                title: "Принцип пирамиды Минто",
+                author: "Барбара Минто",
+                badge: "Логика",
+                note: "Золотой стандарт создания понятных докладов, презентаций и текстов. Твои мысли выстроятся в идеальную пирамиду логики.",
+                categories: ["get_things_done"],
+                link: "https://www.litres.ru/book/barbara-minto/zolotye-pravila-gsc-princip-piramidy-minto-6311656/"
             },
             {
                 id: 18,
-                title: "Организационная культура и лидерство",
-                author: "Эдгар Шейн",
-                category: "business",
-                vibe: "leadership",
-                note: "Лидер формирует культуру, а культура формирует компанию. Эта книга поможет тебе понять скрытый ДНК твоей команды и бережно его улучшить.",
-                badge: "Культура"
+                title: "Я слышу, что вы думаете на самом деле",
+                author: "Марк Гоулстон",
+                badge: "Слушание",
+                note: "Секреты эмпатического слушания. Ты научишься достучаться до любого закрытого человека и находить с ним общий язык.",
+                categories: ["understand_self", "dream_team"],
+                link: "https://www.litres.ru/book/mark-goulston/ya-slyshu-chto-vy-dumaete-na-samom-dele-kak-nahodit-obsch-6311634/"
             },
+
+            // ПЕДАГОГИКА И ВОСПИТАНИЕ
             {
                 id: 19,
-                title: "Доставляя счастье",
-                author: "Тони Шей",
-                category: "business",
-                vibe: "soul",
-                note: "Потрясающая, тёплая история Zappos. О том, как построить бизнес, ставя на первое место искреннюю заботу и счастье каждого клиента.",
-                badge: "Клиенты"
+                title: "Мастерство учителя",
+                author: "Дуг Лемов",
+                badge: "Вовлечение",
+                note: "Сборник невероятно крутых фишек для удержания внимания класса. Будет супер-полезно и лидерам взрослых команд!",
+                categories: ["pedagogy", "dream_team"],
+                link: "https://www.litres.ru/book/dug-lemov/masterstvo-uchitelya-proverennye-metodiki-vydau-21443695/"
             },
             {
                 id: 20,
-                title: "Scrum. Революционный метод управления",
-                author: "Джефф Сазерленд",
-                category: "business",
-                vibe: "leadership",
-                note: "Устал от бесконечной бюрократии и просроченных дедлайнов? Попробуй Scrum — метод, который заставит твою команду двигаться легко и гибко.",
-                badge: "Agile"
+                title: "Искусство обучать",
+                author: "Джули Дирксен",
+                badge: "Обучение",
+                note: "Захватывающая книга о том, как устроен наш мозг во время учебы, и как создавать курсы, от которых невозможно оторваться.",
+                categories: ["pedagogy"],
+                link: "https://www.litres.ru/book/dzhuli-dirksen/iskusstvo-obuchat-kak-sdelat-luboe-obuchenie-ne-10700017/"
             },
             {
                 id: 21,
-                title: "От хорошего к великому",
-                author: "Джим Коллинз",
-                category: "business",
-                vibe: "leadership",
-                note: "Исследование того, как обычные компании становятся великими лидерами рынка благодаря дисциплинированным людям и четкому фокусу.",
-                badge: "Масштаб"
+                title: "Тайная опора",
+                author: "Людмила Петрановская",
+                badge: "Привязанность",
+                note: "Бережная книга о том, как наша любовь и эмоциональная связь с ребенком создают для него прочный фундамент уверенности.",
+                categories: ["pedagogy", "understand_self"],
+                link: "https://www.litres.ru/book/ludmila-petranovskaya/taynaya-opora-privyazannost-v-zhizni-rebenka-11536761/"
             },
             {
                 id: 22,
-                title: "Спроси маму",
-                author: "Роберт Фитцпатрик",
-                category: "business",
-                vibe: "productivity",
-                note: "Друг, если ты планируешь новый проект, никогда не спрашивай маму «хорошая ли это идея». Роберт научит тебя задавать правильные вопросы людям.",
-                badge: "CustDev"
+                title: "На стороне подростка",
+                author: "Франсуаза Дольто",
+                badge: "Подростки",
+                note: "Великая книга, которая поможет понять бунтующего подростка, пережить его кризисы и сохранить теплоту в общении.",
+                categories: ["teens_14_17", "pedagogy"],
+                link: "https://www.litres.ru/book/fransuaza-dolto/na-storone-podrostka-31846950/"
             },
             {
                 id: 23,
-                title: "Стратегия голубого океана",
-                author: "Чан Ким, Рене Моборн",
-                category: "business",
-                vibe: "motivation",
-                note: "Хватит толкаться локтями на тесном рынке! Эта книга научит тебя создавать уникальные ниши, где конкурентов просто нет.",
-                badge: "Стратегия"
+                title: "Что делать, если...",
+                author: "Людмила Петрановская",
+                badge: "Безопасность",
+                note: "Красочный гид для школьника: как вести себя при трудностях в школе, если потерялся, или если обижают сверстники.",
+                categories: ["kids_9_13", "understand_self"],
+                link: "https://www.litres.ru/book/ludmila-petranovskaya/chto-delat-esli-22737637/"
             },
             {
                 id: 24,
+                title: "Увлекательные задачи и головоломки",
+                author: "Н. Тарадайко",
+                badge: "Логика",
+                note: "Занимательный тренажер для развития ума. Крутые загадки, которые развлекут ребенка и прокачают его логику.",
+                categories: ["kids_5_8", "kids_9_13"],
+                link: "#"
+            },
+            {
+                id: 25,
+                title: "Мифы о Поколении Z",
+                author: "Н. Богачева, Е. Сивак",
+                badge: "Поколения",
+                note: "Научное исследование, развеивающее стереотипы о современных клиповых детях. Поможет понять их реальные привычки.",
+                categories: ["pedagogy"],
+                link: "#"
+            },
+
+            // БИЗНЕС, ЛИДЕРСТВО И КОМАНДЫ
+            {
+                id: 26,
+                title: "Организационная культура",
+                author: "Эдгар Шейн",
+                badge: "Культура",
+                note: "Глубокая книга о том, как лидеры создают невидимый внутренний дух компании, который предопределяет успех всего дела.",
+                categories: ["dream_team"],
+                link: "https://www.litres.ru/book/edgar-sheyn/organizacionnaya-kultura-i-liderstvo-b-6325141/"
+            },
+            {
+                id: 27,
+                title: "Доставляя счастье",
+                author: "Тони Шей",
+                badge: "Zappos",
+                note: "Удивительная история Zappos. О том, как фокус на искреннем счастье сотрудников и клиентов делает компанию великой.",
+                categories: ["dream_team", "soul_and_taste"],
+                link: "https://www.litres.ru/book/toni-shey/dostavlyaya-schaste-ot-nuley-do-milliarda-istori-6330894/"
+            },
+            {
+                id: 28,
+                title: "Искусство объяснять",
+                author: "Ли Лефевер",
+                badge: "Простота",
+                note: "Книга научит вас формулировать сложные технические идеи настолько просто, чтобы их с первого раза понял даже ребенок.",
+                categories: ["get_things_done", "pedagogy"],
+                link: "https://www.litres.ru/book/li-lefever/iskusstvo-obyasnyat-kak-donesti-svu-ideu-do-dru-6311654/"
+            },
+            {
+                id: 29,
+                title: "7 навыков высокоэффективных людей",
+                author: "Стивен Кови",
+                badge: "Система",
+                note: "Мировой шедевр о личном росте и принципах, которые помогают выстроить крепкие отношения и добиваться масштабных целей.",
+                categories: ["understand_self", "get_things_done"],
+                link: "https://www.litres.ru/book/stiven-kovi/7-navykov-vysokoeffektivnyh-lude-125028/"
+            },
+            {
+                id: 30,
+                title: "Начни с ПОЧЕМУ",
+                author: "Саймон Синек",
+                badge: "Лидерство",
+                note: "Великие лидеры вдохновляют людей, отвечая на один простой вопрос: «Зачем мы это делаем?». Книга о поиске миссии.",
+                categories: ["dream_team", "get_things_done"],
+                link: "https://www.litres.ru/book/saymon-sinek/nachni-s-pochemu-kak-vydauschiesya-lidery-vdo-6311651/"
+            },
+            {
+                id: 31,
+                title: "Scrum. Революционный метод",
+                author: "Джефф Сазерленд",
+                badge: "Agile",
+                note: "Как делать в два раза больше дел за половину времени. Откажись от громоздких планов в пользу быстрых и гибких спринтов.",
+                categories: ["get_things_done", "dream_team"],
+                link: "https://www.litres.ru/book/dzheff-sazerlend/scrum-revolucionnyy-metod-upravleniya-proektami-10025725/"
+            },
+            {
+                id: 32,
+                title: "От хорошего к великому",
+                author: "Джим Коллинз",
+                badge: "Бизнес",
+                note: "Почему одни компании годами остаются средними, а другие совершают рывок и входят в список величайших брендов мира.",
+                categories: ["dream_team"],
+                link: "https://www.litres.ru/book/dzhim-kollinz/ot-horoshego-k-velikomu-pochemu-odni-kompanii-s-6330903/"
+            },
+            {
+                id: 33,
                 title: "Разверните ваш корабль",
                 author: "Дэвид Марке",
-                category: "business",
-                vibe: "leadership",
-                note: "Как превратить пассивных исполнителей в вовлеченных лидеров. Уникальный опыт капитана атомной подводной лодки.",
-                badge: "Лидерство"
+                badge: "Контроль",
+                note: "Капитан подводной лодки делится смелой концепцией: передавай контроль команде и воспитывай лидеров, а не подчиненных.",
+                categories: ["dream_team"],
+                link: "https://www.litres.ru/book/devid-marke/razvernite-vash-korabl-zhestkiy-menedzhment-ot-6325145/"
+            },
+            {
+                id: 34,
+                title: "Цель",
+                author: "Элияху Голдратт",
+                badge: "ТОС",
+                note: "Легендарный бизнес-роман. На примере завода автор объясняет Теорию ограничений, помогающую найти слабое звено в системе.",
+                categories: ["get_things_done", "dream_team"],
+                link: "https://www.litres.ru/book/eliyah-m-goldratt/cel-process-nepreryvnogo-sovershenstvovaniya-6311649/"
+            },
+
+            // ПРОДУКТОВОЕ МЫШЛЕНИЕ (CUSTDEV И СТРАТЕГИЯ)
+            {
+                id: 35,
+                title: "Конкурентная стратегия",
+                author: "Майкл Портер",
+                badge: "Анализ",
+                note: "Классика бизнес-стратегии. Как анализировать свою отрасль, выявлять конкурентные преимущества и позиционировать продукт.",
+                categories: ["dream_team"],
+                link: "https://www.litres.ru/book/maykl-porter/konkurentnaya-strategiya-metodika-analiza-otras-6325150/"
+            },
+            {
+                id: 36,
+                title: "Стратегия голубого океана",
+                author: "Рене Моборн, В. Чан Ким",
+                badge: "Рынки",
+                note: "Перестань воевать на алых от конкуренции рынках. Создай свой голубой океан — нишу, в которой у тебя не будет соперников.",
+                categories: ["dream_team"],
+                link: "https://www.litres.ru/book/rene-moborn/strategiya-golubogo-okeana-kak-nayti-ili-sozdat-rynok-6330911/"
+            },
+            {
+                id: 37,
+                title: "Спроси маму",
+                author: "Роберт Фитцпатрик",
+                badge: "CustDev",
+                note: "Библия стартаперов. Научись задавать людям такие вопросы, которые помогут вытащить правду об их болях, а не вежливую лесть.",
+                categories: ["understand_self", "get_things_done"],
+                link: "https://www.litres.ru/book/robert-fitcpatrik/sprosi-mamu-kak-obschatsya-s-klientami-i-podtverdit-pravo-23847293/"
+            },
+            {
+                id: 38,
+                title: "Корпорация гениев",
+                author: "Эд Кэтмелл, Эми Уоллес",
+                badge: "Pixar",
+                note: "Потрясающая история Pixar. О том, как выстроить творческий процесс без страха ошибок и давать честную обратную связь.",
+                categories: ["dream_team", "soul_and_taste"],
+                link: "https://www.litres.ru/book/ed-ketmell/korporaciya-geniev-kak-upravlyat-komandoy-tvorcheskih-l-8645061/"
+            },
+
+            // ДЛЯ ДЕТЕЙ И ПОДРОСТКОВ
+            {
+                id: 39,
+                title: "Маленький Принц",
+                author: "Антуан де Сент-Экзюпери",
+                badge: "Душа",
+                note: "Добрая и щемящая притча. Напоминает о том, что взрослые когда-то тоже были детьми, а зорко лишь одно сердце.",
+                categories: ["kids_9_13", "soul_and_taste", "literature_reading"],
+                link: "https://www.litres.ru/book/antuan-de-sent-ekzuperi/malenkiy-princ-125026/"
+            },
+            {
+                id: 40,
+                title: "Алиса в Стране Чудес",
+                author: "Льюис Кэрролл",
+                badge: "Сказка",
+                note: "Погружение в абсурдный и прекрасный мир фантазий Алисы, развивающий гибкость ума и детское воображение.",
+                categories: ["kids_5_8", "kids_9_13", "soul_and_taste", "literature_reading"],
+                link: "https://www.litres.ru/book/luis-kerroll/alisa-v-strane-chudes-21516244/"
+            },
+            {
+                id: 41,
+                title: "Остров Сокровищ",
+                author: "Роберт Стивенсон",
+                badge: "Роман",
+                note: "Роман о пиратах, сокровищах, коварстве Сильвера и храбрости юного Джима. Воспитывает смелость и самостоятельность.",
+                categories: ["kids_9_13", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 42,
+                title: "Волшебник Изумрудного Города",
+                author: "Александр Волков",
+                badge: "Дружба",
+                note: "История о том, как Элли и её верные друзья преодолели все страхи и ураганы, помогая друг другу раскрыть свои таланты.",
+                categories: ["kids_5_8", "literature_reading", "dream_team"],
+                link: "#"
+            },
+            {
+                id: 43,
+                title: "Приключения Тома Сойера",
+                author: "Марк Твен",
+                badge: "Озорство",
+                note: "Том — прирожденный лидер и маркетолог! Книга наполнена весёлыми детскими приключениями, находчивостью и юмором.",
+                categories: ["kids_9_13", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 44,
+                title: "Винни-Пух и все-все-все",
+                author: "Алан Милн",
+                badge: "Уют",
+                note: "Самые добрые и мягкие истории для первого чтения. Отлично подходят для тихих семейных вечеров.",
+                categories: ["kids_5_8", "soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 45,
+                title: "Атлант расправил плечи",
+                author: "Айн Рэнд",
+                badge: "Амбиции",
+                note: "Масштабный роман о созидателях, силе разума и борьбе за право творить. Мощно стимулирует волю у старших подростков.",
+                categories: ["teens_14_17"],
+                link: "#"
+            },
+
+            // ХУДОЖЕСТВЕННАЯ И КЛАССИЧЕСКАЯ ЛИТЕРАТУРА
+            {
+                id: 46,
+                title: "Мартин Иден",
+                author: "Джек Лондон",
+                badge: "Цель",
+                note: "Драматическая история о парне из низов, который совершил невозможное ради любви и признания. Учит идти до конца.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 47,
+                title: "Отец Горио",
+                author: "Оноре де Бальзак",
+                badge: "Париж",
+                note: "Честная и жестокая классика о том, как деньги меняют семейные узы и какую цену приходится платить за амбиции.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 48,
+                title: "Красное и чёрное",
+                author: "Стендаль",
+                badge: "Роман",
+                note: "Тонкий психологический портрет Жюльена Сореля. О выборе пути, лицемерии общества и искренних порывах души.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 49,
+                title: "Милый друг",
+                author: "Ги де Мопассан",
+                badge: "Карьера",
+                note: "Остроумная и циничная история карьерного взлета обольстителя. Заставляет крепко задуматься о морали.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 50,
+                title: "На Западном фронте без перемен",
+                author: "Эрих Мария Ремарк",
+                badge: "Пацифизм",
+                note: "Величайшая книга против войны. История о вчерашних школьниках, столкнувшихся с суровой правдой жизни на передовой.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 51,
+                title: "Три товарища",
+                author: "Эрих Мария Ремарк",
+                badge: "Дружба",
+                note: "Роман, воспевающий настоящую мужскую дружбу и хрупкую любовь посреди разрухи и кризиса. Очень тёплая и грустная книга.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 52,
+                title: "Старик и море",
+                author: "Эрнест Хемингуэй",
+                badge: "Воля",
+                note: "Повесть-манифест о стойкости человека. Человека можно уничтожить, но нельзя победить. Потрясающе сильно.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 53,
+                title: "Чума",
+                author: "Альбер Камю",
+                badge: "Выбор",
+                note: "Хроника охваченного чумой города. Книга-метафора о том, как оставаться человеком и продолжать бороться со злом вопреки всему.",
+                categories: ["teens_14_17", "soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 54,
+                title: "Превращение",
+                author: "Франц Кафка",
+                badge: "Абсурд",
+                note: "Проснувшись утром, Грегор Замза обнаружил, что стал гигантским жуком. Трагический рассказ об одиночестве и семейном эгоизме.",
+                categories: ["teens_14_17", "soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 55,
+                title: "Преступление и наказание",
+                author: "Фёдор Достоевский",
+                badge: "Россия",
+                note: "Глубочайший детектив души. Раскольников проверяет свою теорию, но сталкивается со своей совестью и великой силой сострадания.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 56,
+                title: "Мастер и Маргарита",
+                author: "Михаил Булгаков",
+                badge: "Мистика",
+                note: "Невероятное переплетение библейских сюжетов, московской сатиры, мистического бала и всепоглощающей преданной любви.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 57,
+                title: "Собачье сердце",
+                author: "Михаил Булгаков",
+                badge: "Сатира",
+                note: "Блистательная и острая притча об эксперименте профессора Преображенского. Предупреждение о попытках насильно изменить природу.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 58,
+                title: "Мёртвые души",
+                author: "Николай Гоголь",
+                badge: "Афера",
+                note: "Абсурдное и гротескное путешествие Чичикова. Великая поэма в прозе, обнажающая пороки и порождающая искренний смех.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 59,
+                title: "Герой нашего времени",
+                author: "Михаил Лермонтов",
+                badge: "Печорин",
+                note: "Печорин — циничный интеллектуал, томящийся от скуки. Портрет поколения, который актуален и в наши дни.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+
+            // УЮТНОЕ И ЛЁГКОЕ ЧТЕНИЕ
+            {
+                id: 60,
+                title: "Жареные зеленые помидоры в кафе «Полустанок»",
+                author: "Фэнни Флэгг",
+                badge: "Теплота",
+                note: "Удивительно душевная книга, пахнущая кофе и пирогами. Спасает от любой хандры и дарит веру в добрых людей.",
+                categories: ["soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 61,
+                title: "Автостопом по галактике",
+                author: "Дуглас Адамс",
+                badge: "Юмор",
+                note: "Сумасшедшая, уморительная фантастика. Главное правило галактического автостопщика — Без паники! И не забудь полотенце.",
+                categories: ["soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 62,
+                title: "Ходячий замок",
+                author: "Диана Уинн Джонс",
+                badge: "Магия",
+                note: "Сказочный, невероятно красивый роман об обманчивой внешности, волшебстве, любви и капризном чародее Хауле.",
+                categories: ["kids_9_13", "soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 63,
+                title: "Благие знамения",
+                author: "Терри Пратчетт, Нил Гейман",
+                badge: "Ирония",
+                note: "Ангел и демон объединяются, чтобы остановить конец света, ведь им чертовски нравится уютная земная жизнь и старые пластинки.",
+                categories: ["teens_14_17", "soul_and_taste"],
+                link: "#"
+            },
+            {
+                id: 64,
+                title: "Шоколад",
+                author: "Джоанн Харрис",
+                badge: "Соблазн",
+                note: "Чувственный, ароматный роман о свободе, магии шоколадных трюфелей и праве отличаться от скучного серого большинства.",
+                categories: ["teens_14_17", "soul_and_taste"],
+                link: "#"
+            },
+
+            // АНТИУТОПИИ И ОБЩЕСТВО
+            {
+                id: 65,
+                title: "1984",
+                author: "Джордж Оруэлл",
+                badge: "Свобода",
+                note: "Величайшая антиутопия. Книга учит беречь свободу слова, независимость своего мнения и способность искренне любить.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 66,
+                title: "Скотный двор",
+                author: "Джордж Оруэлл",
+                badge: "Притча",
+                note: "Язвительная и простая сказка о том, как идеалы равенства постепенно превращаются в жесткую диктатуру свиней.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 67,
+                title: "451 градус по Фаренгейту",
+                author: "Рэй Брэдбери",
+                badge: "Книги",
+                note: "О мире, в котором запрещены и сжигаются книги. Страстное предупреждение о ценности образования и глубоких размышлений.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
+            },
+            {
+                id: 68,
+                title: "О дивный новый мир",
+                author: "Олдос Хаксли",
+                badge: "Потребление",
+                note: "Мир, где людей выращивают в пробирках, а любые переживания заглушают пилюлями сомы. Пугающе реалистично.",
+                categories: ["teens_14_17", "literature_reading"],
+                link: "#"
             }
         ];
 
-        // База вдохновляющих цитат
+        // ==========================================
+        // 💬 БАЗА ЦИТАТ ДЛЯ ВДОХНОВЕНИЯ
+        // ==========================================
         const quotes = [
-            { text: "Человека можно уничтожить, но его нельзя победить.", author: "Эрнест Хемингуэй", book: "Старик и море" },
-            { text: "У того, кто имеет «Зачем» жить, может вынести почти любое «Как».", author: "Виктор Франкл", book: "Сказать жизни 'Да!'" },
-            { text: "Забота о клиенте — это не отдел, это философия всей твоей компании.", author: "Тони Шей", book: "Доставляя счастье" },
-            { text: "Если вы не можете объяснить это просто, значит, вы сами не понимаете этого до конца.", author: "Альберт Эйнштейн", book: "Искусство объяснять" },
-            { text: "Спросите людей о вещах, которые происходят в их жизни, а не об их мнении о вашей идее.", author: "Роберт Фитцпатрик", book: "Спроси маму" },
-            { text: "Сила воли — это способность делать то, что действительно важно, даже когда это чертовски трудно.", author: "Келли Макгонигал", book: "Сила воли" }
+            { text: "Зорко одно лишь сердце. Самого главного глазами не увидишь.", author: "Антуан де Сент-Экзюпери", book: "Маленький Принц" },
+            { text: "Тот, кто имеет «Зачем» жить, может вынести почти любое «Как».", author: "Виктор Франкл", book: "Сказать жизни 'Да!'" },
+            { text: "Правильные отношения — это когда тебе помогают расти, а не пытаются переделать под себя.", author: "Людмила Петрановская", book: "Тайная опора" },
+            { text: "Пока ты думаешь, что во всем виноват кто-то другой, ты не можешь ничего изменить.", author: "Борис Литвак", book: "7 шагов к стабильной самооценке" },
+            { text: "Если хочешь построить корабль, не надо собирать людей, чтобы планировать работу — зарази их тоской по бесконечному морю.", author: "Антуан де Сент-Экзюпери", book: "Искусство жить" }
         ];
 
-        // Массив для хранения избранных книг пользователя
         let userShelf = JSON.parse(localStorage.getItem('bright_user_shelf')) || [];
+
+        // ==========================================
+        // 🔄 ИНИЦИАЛИЗАЦИЯ И ОТРИСОВКА
+        // ==========================================
+        window.onload = function() {
+            renderFilters();
+            renderBooks(booksData);
+            updateShelf();
+        };
+
+        // Генерация кнопок разделов
+        function renderFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `vibe-btn px-4 py-2 rounded-full text-xs font-semibold bg-[#11223A] border border-[#E5A93B]/20 text-gray-400 hover:border-[#E5A93B] hover:text-[#E5A93B]`;
+                btn.innerText = cat.name;
+                
+                if (cat.id === activeFilter) {
+                    btn.classList.add('active');
+                }
+
+                btn.onclick = () => selectCategory(cat.id);
+                container.appendChild(btn);
+            });
+        }
+
+        // Переключение раздела
+        function selectCategory(categoryId) {
+            activeFilter = categoryId;
+            renderFilters();
+            document.getElementById('book-search').value = '';
+            filterBooks();
+        }
 
         // Функция рендеринга карточек книг
         function renderBooks(booksToRender) {
@@ -483,8 +939,8 @@
 
             if (booksToRender.length === 0) {
                 mainContainer.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <p class="text-gray-400 text-lg">Увы, друг, мы не нашли книг по этому запросу...</p>
+                    <div class="col-span-full text-center py-12 text-gray-400">
+                        <p class="text-lg">Увы, друг, мы не нашли книг по этому запросу...</p>
                         <button onclick="resetFilters()" class="text-[#E5A93B] underline text-sm mt-2 hover:text-[#FFF3CD]">Сбросить поиск</button>
                     </div>
                 `;
@@ -514,7 +970,7 @@
                             
                             <!-- Наш тёплый стикер-заметка от друга -->
                             <div class="bg-[#FFF3CD] text-[#5D4037] p-4 rounded-xl relative rotate-[-1deg] shadow-md transform hover:rotate-0 transition-transform duration-300">
-                                <div class="absolute top-0 right-2 w-3 h-3 bg-red-400/50 rounded-full"></div> <!-- Стилизованная кнопка/булавка -->
+                                <div class="absolute top-0 right-2 w-3 h-3 bg-red-400/50 rounded-full"></div>
                                 <p class="text-xs font-bold uppercase tracking-wider mb-1 text-red-800">Совет от друга:</p>
                                 <p class="handwritten text-base leading-snug line-clamp-3">${book.note}</p>
                             </div>
@@ -543,16 +999,16 @@
                                 </div>
                             </div>
 
-                            <div class="text-center">
-                                <button onclick="toggleCard(${book.id})" class="text-xs text-[#E5A93B] hover:underline">Вернуться к обложке</button>
+                            <div class="flex gap-2 items-center justify-between">
+                                <button onclick="toggleCard(${book.id})" class="text-xs text-[#E5A93B] hover:underline">Вернуться</button>
+                                <a href="${book.link === '#' ? '#' : book.link}" ${book.link === '#' ? 'onclick="event.preventDefault(); alert(\'Ссылка временно настраивается, мы скоро её обновим!\');"' : 'target="_blank"'} class="bg-[#E5A93B] text-[#08101D] text-xs font-bold px-4 py-1.5 rounded-lg hover:bg-[#B8860B] transition-colors">Читать</a>
                             </div>
                         </div>
                     </div>
                 `;
 
-                // Позволяем карточке переворачиваться по клику на неё (но не при клике на лайк)
                 card.addEventListener('click', (e) => {
-                    if (!e.target.closest('button')) {
+                    if (!e.target.closest('button') && !e.target.closest('a')) {
                         card.classList.toggle('flipped');
                     }
                 });
@@ -561,32 +1017,24 @@
             });
         }
 
-        // Переворот конкретной карточки программно
         function toggleCard(id) {
             const card = document.getElementById(`book-card-${id}`);
             if (card) card.classList.toggle('flipped');
         }
 
-        // Добавление/удаление из личной полки (Избранное)
         function toggleFavorite(event, id) {
-            event.stopPropagation(); // Предотвращаем переворот карточки при лайке
-            
+            event.stopPropagation();
             const index = userShelf.indexOf(id);
             if (index === -1) {
                 userShelf.push(id);
             } else {
                 userShelf.splice(index, 1);
             }
-
             localStorage.setItem('bright_user_shelf', JSON.stringify(userShelf));
             updateShelf();
-            
-            // Перерисовываем карточки, чтобы обновить сердечки
-            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
-            filterBooks(activeFilter);
+            filterBooks();
         }
 
-        // Обновление личной полки пользователя
         function updateShelf() {
             const shelfSection = document.getElementById('user-shelf-section');
             const shelfContainer = document.getElementById('user-shelf-container');
@@ -595,8 +1043,6 @@
             if (userShelf.length > 0) {
                 shelfSection.classList.remove('hidden');
                 shelfCount.innerText = userShelf.length;
-                
-                // Рендерим маленькие корешки книг на полке
                 shelfContainer.innerHTML = '';
                 userShelf.forEach(id => {
                     const book = booksData.find(b => b.id === id);
@@ -606,14 +1052,16 @@
                         bookSpine.innerHTML = `
                             <div class="text-[9px] font-bold uppercase tracking-wider overflow-hidden text-ellipsis whitespace-nowrap">${book.author}</div>
                             <div class="text-xs font-black leading-tight line-clamp-2">${book.title}</div>
-                            <button onclick="removeFavoriteFromSpine(event, ${book.id})" class="absolute top-1 right-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-700">✕</button>
+                            <button onclick="removeFavoriteFromSpine(event, ${book.id})" class="absolute top-1 right-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-700 font-bold">✕</button>
                         `;
-                        bookSpine.addEventListener('click', () => {
-                            const card = document.getElementById(`book-card-${book.id}`);
-                            if (card) {
-                                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                card.classList.add('gold-glow');
-                                setTimeout(() => card.classList.remove('gold-glow'), 2000);
+                        bookSpine.addEventListener('click', (e) => {
+                            if (!e.target.closest('button')) {
+                                const card = document.getElementById(`book-card-${book.id}`);
+                                if (card) {
+                                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    card.classList.add('gold-glow');
+                                    setTimeout(() => card.classList.remove('gold-glow'), 2000);
+                                }
                             }
                         });
                         shelfContainer.appendChild(bookSpine);
@@ -624,39 +1072,22 @@
             }
         }
 
-        // Удаление книги прямо с полки (по крестику на корешке)
         function removeFavoriteFromSpine(event, id) {
             event.stopPropagation();
             userShelf = userShelf.filter(item => item !== id);
             localStorage.setItem('bright_user_shelf', JSON.stringify(userShelf));
             updateShelf();
-            
-            // Перерисовываем сетку
-            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
-            filterBooks(activeFilter);
+            filterBooks();
         }
 
-        // Фильтрация книг по "Настроению" (Vibe)
-        function filterBooks(vibe) {
-            // Переключаем активный класс на кнопках
-            document.querySelectorAll('.vibe-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-[#E5A93B]', 'text-[#08101D]');
-                btn.classList.add('bg-[#11223A]', 'text-gray-400');
-            });
-
-            const activeBtn = Array.from(document.querySelectorAll('.vibe-btn')).find(btn => btn.getAttribute('onclick').includes(`'${vibe}'`));
-            if (activeBtn) {
-                activeBtn.classList.add('active', 'bg-[#E5A93B]', 'text-[#08101D]');
-                activeBtn.classList.remove('bg-[#11223A]', 'text-gray-400');
-            }
-
+        function filterBooks() {
             let filtered = booksData;
-            if (vibe !== 'all') {
-                filtered = booksData.filter(b => b.vibe === vibe || b.category === vibe);
+            
+            if (activeFilter !== 'all') {
+                filtered = booksData.filter(b => b.categories.includes(activeFilter));
             }
 
-            // Учитываем текущий поисковый запрос
-            const searchVal = document.getElementById('book-search').value.toLowerCase();
+            const searchVal = document.getElementById('book-search').value.toLowerCase().trim();
             if (searchVal) {
                 filtered = filtered.filter(b => 
                     b.title.toLowerCase().includes(searchVal) || 
@@ -668,27 +1099,21 @@
             renderBooks(filtered);
         }
 
-        // Поиск в реальном времени
-        document.getElementById('book-search').addEventListener('input', (e) => {
-            const activeFilter = document.querySelector('.vibe-btn.active').getAttribute('onclick').match(/'([^']+)'/)[1];
-            filterBooks(activeFilter);
+        document.getElementById('book-search').addEventListener('input', () => {
+            filterBooks();
         });
 
-        // Сбросить фильтры
         function resetFilters() {
             document.getElementById('book-search').value = '';
-            filterBooks('all');
+            selectCategory('all');
         }
 
-        // Показ случайной цитаты (для вдохновения)
         function getRandomQuote() {
             const randomIndex = Math.floor(Math.random() * quotes.length);
             const quote = quotes[randomIndex];
-
             document.getElementById('quote-text').innerText = quote.text;
             document.getElementById('quote-author').innerText = `— ${quote.author}`;
             document.getElementById('quote-book').innerText = `из книги «${quote.book}»`;
-
             document.getElementById('quote-modal').classList.remove('hidden');
         }
 
@@ -696,11 +1121,11 @@
             document.getElementById('quote-modal').classList.add('hidden');
         }
 
-        // Запуск при загрузке страницы
-        window.onload = function() {
-            renderBooks(booksData);
-            updateShelf();
-        };
+        document.getElementById('quote-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('quote-modal')) {
+                closeQuoteModal();
+            }
+        });
     </script>
 </body>
 </html>
